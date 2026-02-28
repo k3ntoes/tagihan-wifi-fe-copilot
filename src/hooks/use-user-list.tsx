@@ -1,5 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ColumnDef } from "@tanstack/react-table";
+import {
+  CheckCircle2,
+  Edit,
+  Shield,
+  ShieldCheck,
+  Trash2,
+  User as UserIcon,
+  XCircle,
+} from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -36,6 +45,9 @@ export function useUserList() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [editItem, setEditItem] = useState<User | null>(null);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [changePasswordDialogOpen, setChangePasswordDialogOpen] =
+    useState(false);
 
   const usersQuery = useUsers({ page, perPage: 10 });
   const createUser = useCreateUser();
@@ -51,6 +63,7 @@ export function useUserList() {
     try {
       await createUser.mutateAsync(payload);
       toast.success("User berhasil dibuat.");
+      setCreateDialogOpen(false);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Gagal membuat user.",
@@ -92,6 +105,7 @@ export function useUserList() {
     try {
       await changePassword.mutateAsync(payload);
       toast.success("Password berhasil diubah.");
+      setChangePasswordDialogOpen(false);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Gagal mengubah password.",
@@ -113,41 +127,78 @@ export function useUserList() {
   };
 
   const columns: ColumnDef<User>[] = [
-    { accessorKey: "username", header: "Username" },
-    { accessorKey: "role", header: "Role" },
+    {
+      accessorKey: "username",
+      header: "Username",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <UserIcon className="h-4 w-4 text-primary" />
+          </div>
+          <span className="font-medium">{row.original.username}</span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "role",
+      header: "Role",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          {row.original.role === "admin" ? (
+            <>
+              <ShieldCheck className="h-4 w-4 text-purple-500" />
+              <span className="font-semibold text-purple-600">Admin</span>
+            </>
+          ) : (
+            <>
+              <Shield className="h-4 w-4 text-blue-500" />
+              <span className="font-semibold text-blue-600">User</span>
+            </>
+          )}
+        </div>
+      ),
+    },
     {
       id: "status",
       header: "Status",
       cell: ({ row }) =>
         row.original.isActive ? (
-          <span className="rounded bg-emerald-100 px-2 py-0.5 text-emerald-700">
-            Active
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            Aktif
           </span>
         ) : (
-          <span className="rounded bg-rose-100 px-2 py-0.5 text-rose-700">
-            Inactive
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-600/20">
+            <XCircle className="h-3.5 w-3.5" />
+            Nonaktif
           </span>
         ),
     },
     {
       id: "actions",
-      header: "Actions",
+      header: "Aksi",
       cell: ({ row }) => (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <Button
             type="button"
-            className="rounded border border-zinc-300 px-2 py-1 text-xs text-zinc-700"
+            variant="outline"
+            size="sm"
+            className="h-8 gap-1.5"
             onClick={() => setEditItem(row.original)}
           >
+            <Edit className="h-3.5 w-3.5" />
             Edit
           </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
                 type="button"
-                className="rounded border border-rose-300 px-2 py-1 text-xs text-rose-700"
+                variant="outline"
+                size="sm"
+                className="h-8 gap-1.5 border-rose-200 text-rose-700 hover:bg-rose-50 hover:text-rose-800"
               >
-                Delete
+                <Trash2 className="h-3.5 w-3.5" />
+                Hapus
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -155,7 +206,7 @@ export function useUserList() {
                 <AlertDialogTitle>Hapus User?</AlertDialogTitle>
                 <AlertDialogDescription>
                   User &ldquo;{row.original.username}&rdquo; akan dihapus secara
-                  permanen.
+                  permanen. Tindakan ini tidak dapat dibatalkan.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -176,8 +227,8 @@ export function useUserList() {
 
   const visibleUsers = search
     ? (usersQuery.data?.data ?? []).filter((u) =>
-        u.username.toLowerCase().includes(search.toLowerCase()),
-      )
+      u.username.toLowerCase().includes(search.toLowerCase()),
+    )
     : (usersQuery.data?.data ?? []);
 
   return {
@@ -185,6 +236,10 @@ export function useUserList() {
     search,
     editItem,
     setEditItem,
+    createDialogOpen,
+    setCreateDialogOpen,
+    changePasswordDialogOpen,
+    setChangePasswordDialogOpen,
 
     // Queries
     usersQuery,

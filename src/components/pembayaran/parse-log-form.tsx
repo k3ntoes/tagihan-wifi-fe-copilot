@@ -1,11 +1,13 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -24,15 +26,13 @@ export function ParseLogForm({ onSubmit, loading }: ParseLogFormProps) {
 
   return (
     <Form {...form}>
-      <form
-        className="flex flex-col gap-2 sm:flex-row"
-        onSubmit={form.handleSubmit(handleSubmit)}
-      >
+      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
         <FormField
           control={form.control}
           name="log_entry"
           render={({ field }) => (
-            <FormItem className="w-full">
+            <FormItem>
+              <FormLabel>Log Entry</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Contoh: 05-02-2026 PT Mitra Bisnis"
@@ -43,12 +43,15 @@ export function ParseLogForm({ onSubmit, loading }: ParseLogFormProps) {
             </FormItem>
           )}
         />
-        <Button
-          className="rounded-md border border-zinc-300 px-4 py-2 text-sm"
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? "Memproses..." : "Parse Log"}
+        <Button type="submit" disabled={loading} className="w-full gap-2">
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Memproses...
+            </>
+          ) : (
+            "Parse Log"
+          )}
         </Button>
       </form>
     </Form>

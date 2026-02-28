@@ -1,11 +1,13 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -37,15 +39,13 @@ export function PembayaranForm({
 
   return (
     <Form {...form}>
-      <form
-        className="grid grid-cols-1 gap-3 md:grid-cols-3"
-        onSubmit={form.handleSubmit(handleSubmit)}
-      >
+      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
         <FormField
           control={form.control}
           name="customer_id"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Pelanggan</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -69,6 +69,7 @@ export function PembayaranForm({
           name="payment_date"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Tanggal Pembayaran</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>
@@ -76,18 +77,19 @@ export function PembayaranForm({
             </FormItem>
           )}
         />
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="billing_month"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Bulan Tagihan</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
                     min={1}
                     max={12}
-                    placeholder="Bulan"
+                    placeholder="1-12"
                     {...field}
                     onChange={(e) => field.onChange(e.target.valueAsNumber)}
                   />
@@ -101,29 +103,12 @@ export function PembayaranForm({
             name="billing_year"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Tahun Tagihan</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
                     min={2020}
-                    placeholder="Tahun"
-                    {...field}
-                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="amount"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    type="number"
-                    min={1}
-                    placeholder="Amount"
+                    placeholder="Contoh: 2026"
                     {...field}
                     onChange={(e) => field.onChange(e.target.valueAsNumber)}
                   />
@@ -133,12 +118,34 @@ export function PembayaranForm({
             )}
           />
         </div>
-        <Button
-          type="submit"
-          disabled={loading}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 md:col-span-3"
-        >
-          {loading ? "Menyimpan..." : "Simpan Pembayaran"}
+        <FormField
+          control={form.control}
+          name="amount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Jumlah (Rp)</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min={1}
+                  placeholder="Contoh: 200000"
+                  {...field}
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" disabled={loading} className="w-full gap-2">
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Menyimpan...
+            </>
+          ) : (
+            "Simpan Pembayaran"
+          )}
         </Button>
       </form>
     </Form>

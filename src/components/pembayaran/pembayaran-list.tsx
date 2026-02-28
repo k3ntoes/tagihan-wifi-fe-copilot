@@ -1,6 +1,16 @@
 "use client";
 
+import { FileText, Plus } from "lucide-react";
 import { DataTable } from "@/components/data-table/data-table";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { usePembayaranList } from "@/hooks/use-pembayaran-list";
 import { ParseLogForm } from "./parse-log-form";
 import { PembayaranForm } from "./pembayaran-form";
@@ -10,6 +20,10 @@ export function PembayaranList() {
     filterCustomerId,
     filterYear,
     filterMonth,
+    createDialogOpen,
+    setCreateDialogOpen,
+    parseDialogOpen,
+    setParseDialogOpen,
     paymentsQuery,
     customersQuery,
     createPayment,
@@ -28,16 +42,59 @@ export function PembayaranList() {
   } = usePembayaranList();
 
   return (
-    <section className="space-y-4">
-      <h1 className="text-2xl font-semibold">Pembayaran</h1>
-
-      <PembayaranForm
-        customers={customersQuery.data?.data ?? []}
-        loading={createPayment.isPending}
-        onSubmit={handleCreatePayment}
-      />
-
-      <ParseLogForm loading={parseLog.isPending} onSubmit={handleParseLog} />
+    <section className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Pembayaran</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Catat pembayaran pelanggan dan parse log pembayaran
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <Plus className="h-4 w-4" />
+                Tambah Pembayaran
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-125">
+              <DialogHeader>
+                <DialogTitle>Catat Pembayaran Baru</DialogTitle>
+                <DialogDescription>
+                  Catat penerimaan pembayaran dari pelanggan untuk periode
+                  tertentu.
+                </DialogDescription>
+              </DialogHeader>
+              <PembayaranForm
+                customers={customersQuery.data?.data ?? []}
+                loading={createPayment.isPending}
+                onSubmit={handleCreatePayment}
+              />
+            </DialogContent>
+          </Dialog>
+          <Dialog open={parseDialogOpen} onOpenChange={setParseDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="gap-2">
+                <FileText className="h-4 w-4" />
+                Parse Log
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-125">
+              <DialogHeader>
+                <DialogTitle>Parse Log Pembayaran</DialogTitle>
+                <DialogDescription>
+                  Salin dan tempel log pembayaran untuk diparse secara otomatis.
+                </DialogDescription>
+              </DialogHeader>
+              <ParseLogForm
+                loading={parseLog.isPending}
+                onSubmit={handleParseLog}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
 
       <div className="flex flex-wrap items-center gap-2">
         <select
@@ -45,7 +102,7 @@ export function PembayaranList() {
           value={filterCustomerId}
           onChange={(e) => handleCustomerFilterChange(e.target.value)}
         >
-          <option value="">Semua Pelanggan</option>
+          <option value="">📋 Semua Pelanggan</option>
           {(customersQuery.data?.data ?? []).map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
@@ -58,7 +115,7 @@ export function PembayaranList() {
           value={filterYear}
           onChange={(e) => handleYearFilterChange(e.target.value)}
         >
-          <option value="">Semua Tahun</option>
+          <option value="">📅 Semua Tahun</option>
           {yearOptions.map((y) => (
             <option key={y} value={y}>
               {y}
@@ -71,7 +128,7 @@ export function PembayaranList() {
           value={filterMonth}
           onChange={(e) => handleMonthFilterChange(e.target.value)}
         >
-          <option value="">Semua Bulan</option>
+          <option value="">🗓️ Semua Bulan</option>
           {months.map((m) => (
             <option key={m.value} value={m.value}>
               {m.label}
@@ -80,13 +137,15 @@ export function PembayaranList() {
         </select>
 
         {(filterCustomerId || filterYear || filterMonth) && (
-          <button
+          <Button
             type="button"
-            className="text-sm text-zinc-500 underline"
+            variant="ghost"
+            size="sm"
+            className="text-sm"
             onClick={handleResetFilters}
           >
             Reset Filter
-          </button>
+          </Button>
         )}
       </div>
 

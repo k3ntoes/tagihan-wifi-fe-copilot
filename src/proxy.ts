@@ -68,7 +68,6 @@ async function handleProxyApi(request: NextRequest) {
     contentType.includes("application/json")
   ) {
     const payload = await upstream.json();
-    console.log("Login response payload:", payload);
     const response = NextResponse.json(payload, { status: upstream.status });
 
     if (upstream.ok && payload?.accessToken) {

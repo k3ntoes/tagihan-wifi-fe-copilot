@@ -1,11 +1,13 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -28,17 +30,15 @@ export function UserForm({ onSubmit, loading }: UserFormProps) {
 
   return (
     <Form {...form}>
-      <form
-        className="grid grid-cols-1 gap-3 md:grid-cols-4"
-        onSubmit={form.handleSubmit(handleSubmit)}
-      >
+      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
         <FormField
           control={form.control}
           name="username"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="Username" {...field} />
+                <Input placeholder="Contoh: johndoe" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -49,8 +49,13 @@ export function UserForm({ onSubmit, loading }: UserFormProps) {
           name="password"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Password" {...field} />
+                <Input
+                  type="password"
+                  placeholder="Minimal 6 karakter"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -61,6 +66,7 @@ export function UserForm({ onSubmit, loading }: UserFormProps) {
           name="role"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Role</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -76,12 +82,15 @@ export function UserForm({ onSubmit, loading }: UserFormProps) {
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          disabled={loading}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-        >
-          {loading ? "Menyimpan..." : "Tambah User"}
+        <Button type="submit" disabled={loading} className="w-full gap-2">
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Menyimpan...
+            </>
+          ) : (
+            "Tambah User"
+          )}
         </Button>
       </form>
     </Form>

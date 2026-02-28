@@ -1,12 +1,22 @@
 "use client";
 
+import { Key, Plus } from "lucide-react";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableSearch } from "@/components/data-table/data-table-search";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -85,6 +95,10 @@ export function UserList() {
     search,
     editItem,
     setEditItem,
+    createDialogOpen,
+    setCreateDialogOpen,
+    changePasswordDialogOpen,
+    setChangePasswordDialogOpen,
     usersQuery,
     visibleUsers,
     createUser,
@@ -100,15 +114,60 @@ export function UserList() {
   } = useUserList();
 
   return (
-    <section className="space-y-4">
-      <h1 className="text-2xl font-semibold">Users</h1>
-
-      <UserForm loading={createUser.isPending} onSubmit={handleCreateUser} />
-
-      <ChangePasswordForm
-        loading={changePassword.isPending}
-        onSubmit={handleChangePassword}
-      />
+    <section className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Manajemen User</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Kelola akun pengguna dan hak akses sistem
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <Plus className="h-4 w-4" />
+                Tambah User
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-125">
+              <DialogHeader>
+                <DialogTitle>Tambah User Baru</DialogTitle>
+                <DialogDescription>
+                  Buat akun pengguna baru dengan username, password, dan role.
+                </DialogDescription>
+              </DialogHeader>
+              <UserForm
+                loading={createUser.isPending}
+                onSubmit={handleCreateUser}
+              />
+            </DialogContent>
+          </Dialog>
+          <Dialog
+            open={changePasswordDialogOpen}
+            onOpenChange={setChangePasswordDialogOpen}
+          >
+            <DialogTrigger asChild>
+              <Button variant="outline" className="gap-2">
+                <Key className="h-4 w-4" />
+                Ganti Password
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-125">
+              <DialogHeader>
+                <DialogTitle>Ganti Password</DialogTitle>
+                <DialogDescription>
+                  Perbarui password akun Anda untuk keamanan yang lebih baik.
+                </DialogDescription>
+              </DialogHeader>
+              <ChangePasswordForm
+                loading={changePassword.isPending}
+                onSubmit={handleChangePassword}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
 
       <DataTableSearch
         value={search}
@@ -131,12 +190,15 @@ export function UserList() {
         open={editItem !== null}
         onOpenChange={(open) => !open && setEditItem(null)}
       >
-        <SheetContent>
+        <SheetContent className="sm:max-w-125">
           <SheetHeader>
             <SheetTitle>Edit User</SheetTitle>
+            <SheetDescription>
+              Ubah informasi user yang sudah ada.
+            </SheetDescription>
           </SheetHeader>
           {editItem && (
-            <div className="mt-4">
+            <div className="mt-6">
               <EditUserForm
                 user={editItem}
                 loading={updateUser.isPending}

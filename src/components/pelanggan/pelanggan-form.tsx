@@ -1,11 +1,13 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -39,17 +41,15 @@ export function PelangganForm({
 
   return (
     <Form {...form}>
-      <form
-        className="grid grid-cols-1 gap-3 md:grid-cols-4"
-        onSubmit={form.handleSubmit(handleSubmit)}
-      >
+      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Nama Pelanggan</FormLabel>
               <FormControl>
-                <Input placeholder="Nama pelanggan" {...field} />
+                <Input placeholder="Contoh: John Doe" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -60,6 +60,7 @@ export function PelangganForm({
           name="package_id"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Paket</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -83,11 +84,12 @@ export function PelangganForm({
           name="monthly_fee"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Biaya Bulanan (Rp)</FormLabel>
               <FormControl>
                 <Input
                   type="number"
                   min={1}
-                  placeholder="Biaya bulanan"
+                  placeholder="Contoh: 200000"
                   {...field}
                   onChange={(e) => field.onChange(e.target.valueAsNumber)}
                 />
@@ -96,16 +98,17 @@ export function PelangganForm({
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          disabled={loading}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-        >
-          {loading
-            ? "Menyimpan..."
-            : initialValues
-              ? "Update Pelanggan"
-              : "Simpan Pelanggan"}
+        <Button type="submit" disabled={loading} className="w-full gap-2">
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Menyimpan...
+            </>
+          ) : initialValues ? (
+            "Update Pelanggan"
+          ) : (
+            "Simpan Pelanggan"
+          )}
         </Button>
       </form>
     </Form>

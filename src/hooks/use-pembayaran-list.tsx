@@ -1,4 +1,10 @@
 import type { ColumnDef } from "@tanstack/react-table";
+import {
+  Calendar,
+  CheckCircle2,
+  CreditCard,
+  User,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { formatCurrency, formatDate } from "@/lib/number_helper";
@@ -30,6 +36,8 @@ export function usePembayaranList() {
   const [filterCustomerId, setFilterCustomerId] = useState<string>("");
   const [filterYear, setFilterYear] = useState<string>("");
   const [filterMonth, setFilterMonth] = useState<string>("");
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [parseDialogOpen, setParseDialogOpen] = useState(false);
 
   const paymentsQuery = usePayments({
     page,
@@ -52,6 +60,7 @@ export function usePembayaranList() {
     try {
       await createPayment.mutateAsync(payload);
       toast.success("Pembayaran berhasil dicatat.");
+      setCreateDialogOpen(false);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Gagal mencatat pembayaran.",
@@ -63,6 +72,7 @@ export function usePembayaranList() {
     try {
       await parseLog.mutateAsync(payload);
       toast.success("Log pembayaran berhasil diparse.");
+      setParseDialogOpen(false);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Gagal parse log.");
     }
@@ -105,23 +115,48 @@ export function usePembayaranList() {
     {
       id: "customer",
       header: "Pelanggan",
-      cell: ({ row }) => row.original.customer.name,
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <User className="h-4 w-4 text-primary" />
+          </div>
+          <span className="font-medium">{row.original.customer.name}</span>
+        </div>
+      ),
     },
     {
       id: "date",
       header: "Tanggal Bayar",
-      cell: ({ row }) => formatDate(row.original.paymentDate),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <Calendar className="h-4 w-4 text-blue-500" />
+          <span className="text-sm text-blue-600">
+            {formatDate(row.original.paymentDate)}
+          </span>
+        </div>
+      ),
     },
     {
       id: "period",
       header: "Periode",
-      cell: ({ row }) =>
-        `${row.original.billingMonth}/${row.original.billingYear}`,
+      cell: ({ row }) => (
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-600/20">
+          <CheckCircle2 className="h-3.5 w-3.5" />
+          {row.original.billingMonth}/{row.original.billingYear}
+        </span>
+      ),
     },
     {
       id: "amount",
       header: "Jumlah",
-      cell: ({ row }) => formatCurrency(row.original.amount),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <CreditCard className="h-4 w-4 text-emerald-500" />
+          <span className="font-semibold text-emerald-600">
+            {formatCurrency(row.original.amount)}
+          </span>
+        </div>
+      ),
     },
   ];
 
@@ -130,6 +165,10 @@ export function usePembayaranList() {
     filterCustomerId,
     filterYear,
     filterMonth,
+    createDialogOpen,
+    setCreateDialogOpen,
+    parseDialogOpen,
+    setParseDialogOpen,
 
     // Queries
     paymentsQuery,
