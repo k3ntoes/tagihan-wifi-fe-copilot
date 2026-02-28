@@ -87,7 +87,7 @@ export function useUserList() {
     }
   };
 
-  const handleDeleteUser = async (id: string) => {
+  const handleDeleteUser = async (id: number) => {
     try {
       await deleteUser.mutateAsync(id);
       toast.success("User dihapus.");

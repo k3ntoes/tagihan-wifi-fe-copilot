@@ -28,7 +28,7 @@ import {
   usePackages,
   useUpdatePackage,
 } from "@/services/package-service";
-import type { Package } from "@/types/api";
+import type { CreatePackagePayload, Package } from "@/types/api";
 
 export function usePaketList() {
   const [page, setPage] = useState(1);
@@ -41,11 +41,7 @@ export function usePaketList() {
   const updatePackage = useUpdatePackage();
   const deletePackage = useDeletePackage();
 
-  const handleCreate = async (values: {
-    name: string;
-    speed: number;
-    price: number;
-  }) => {
+  const handleCreate = async (values: CreatePackagePayload) => {
     try {
       await createPackage.mutateAsync(values);
       toast.success("Paket berhasil dibuat.");
@@ -57,11 +53,7 @@ export function usePaketList() {
     }
   };
 
-  const handleUpdate = async (values: {
-    name: string;
-    speed: number;
-    price: number;
-  }) => {
+  const handleUpdate = async (values: CreatePackagePayload) => {
     if (!editItem) return;
     try {
       await updatePackage.mutateAsync({

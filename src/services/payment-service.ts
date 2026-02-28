@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiGet, apiPost } from "@/lib/api-client";
+import { apiDelete, apiGet, apiPatch, apiPost } from "@/lib/api-client";
 import type { PaginatedResponse, Payment, SingleResponse } from "@/types/api";
 
 interface PaymentQuery {
@@ -39,6 +39,38 @@ export function useCreatePayment() {
       billing_year: number;
       amount: number;
     }) => apiPost<SingleResponse<Payment>>("/payments", payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [paymentKey] }),
+  });
+}
+
+export function useUpdatePayment() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: {
+      id: string;
+      customer_id: string;
+      payment_date: string;
+      billing_month: number;
+      billing_year: number;
+      amount: number;
+    }) =>
+      apiPatch<SingleResponse<Payment>>(`/payments/${payload.id}`, {
+        customer_id: payload.customer_id,
+        payment_date: payload.payment_date,
+        billing_month: payload.billing_month,
+        billing_year: payload.billing_year,
+        amount: payload.amount,
+      }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [paymentKey] }),
+  });
+}
+
+export function useDeletePayment() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => apiDelete(`/payments/${id}`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [paymentKey] }),
   });
 }

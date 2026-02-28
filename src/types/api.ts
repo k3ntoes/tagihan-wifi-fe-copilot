@@ -31,15 +31,8 @@ export interface User {
   createdAt: string;
 }
 
-export interface Package {
-  id: string;
-  name: string;
-  speed: number;
-  price: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+import type { Package } from "./package";
+export type { Package, CreatePackagePayload, UpdatePackagePayload } from "./package";
 
 export interface Customer {
   id: string;

@@ -7,7 +7,13 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { apiDelete, apiGet, apiPost, apiPut } from "@/lib/api-client";
-import type { Package, PaginatedResponse, SingleResponse } from "@/types/api";
+import type {
+  CreatePackagePayload,
+  Package,
+  PaginatedResponse,
+  SingleResponse,
+  UpdatePackagePayload,
+} from "@/types/api";
 
 interface PackageQuery {
   page: number;
@@ -35,7 +41,7 @@ export function useCreatePackage() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: { name: string; speed: number; price: number }) =>
+    mutationFn: (payload: CreatePackagePayload) =>
       apiPost<SingleResponse<Package>>("/packages", payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [packageKey] }),
   });
@@ -45,12 +51,7 @@ export function useUpdatePackage() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: {
-      id: string;
-      name: string;
-      speed: number;
-      price: number;
-    }) =>
+    mutationFn: (payload: UpdatePackagePayload) =>
       apiPut<SingleResponse<Package>>(`/packages/${payload.id}`, {
         name: payload.name,
         speed: payload.speed,

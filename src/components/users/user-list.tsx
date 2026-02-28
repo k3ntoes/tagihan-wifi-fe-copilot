@@ -1,9 +1,29 @@
 "use client";
 
-import { Key, Plus } from "lucide-react";
+import {
+  CheckCircle2,
+  Key,
+  KeyRound,
+  Loader2,
+  Plus,
+  Save,
+  Shield,
+  ShieldCheck,
+  User,
+  Users,
+  XCircle,
+} from "lucide-react";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableSearch } from "@/components/data-table/data-table-search";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -12,16 +32,30 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { useEditUserForm, useUserList } from "@/hooks/use-user-list";
-import type { User } from "@/types/api";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import {
+  type EditUserValues,
+  useEditUserForm,
+  useUserList,
+} from "@/hooks/use-user-list";
+import type { User as UserType } from "@/types/api";
 import { ChangePasswordForm } from "./change-password-form";
 import { UserForm } from "./user-form";
 
@@ -30,63 +64,96 @@ function EditUserForm({
   onSubmit,
   loading,
 }: {
-  user: User;
-  onSubmit: (values: {
-    username: string;
-    role: "admin" | "user";
-    is_active: boolean;
-  }) => Promise<void>;
+  user: UserType;
+  onSubmit: (values: EditUserValues) => Promise<void>;
   loading?: boolean;
 }) {
   const form = useEditUserForm(user);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = form;
 
   return (
-    <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="edit-username" className="text-sm font-medium">
-          Username
-        </label>
-        <Input
-          id="edit-username"
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
-          {...register("username")}
-        />
-        {errors.username && (
-          <p className="text-xs text-rose-600">{errors.username.message}</p>
-        )}
-      </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="edit-role" className="text-sm font-medium">
-          Role
-        </label>
-        <select
-          id="edit-role"
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
-          {...register("role")}
-        >
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
-      <div className="flex items-center gap-2">
-        <input type="checkbox" id="is_active" {...register("is_active")} />
-        <label htmlFor="is_active" className="text-sm">
-          Aktif
-        </label>
-      </div>
-      <Button
-        type="submit"
-        disabled={loading}
-        className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+    <Form {...form}>
+      <form
+        className="space-y-4"
+        onSubmit={form.handleSubmit(onSubmit)}
       >
-        {loading ? "Menyimpan..." : "Update User"}
-      </Button>
-    </form>
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                <User className="h-4 w-4 text-primary" />
+                Username
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="Username" {...field} />
+              </FormControl>
+              <FormDescription>Minimal 3 karakter.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-purple-500" />
+                Role
+              </FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih role" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="user">User</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormDescription>Hak akses pengguna dalam sistem.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="is_active"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>Aktif</FormLabel>
+                <FormDescription>
+                  User yang tidak aktif tidak dapat login ke sistem.
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+        <Separator />
+        <Button type="submit" disabled={loading} className="w-full gap-2">
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Menyimpan...
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4" />
+              Update User
+            </>
+          )}
+        </Button>
+      </form>
+    </Form>
   );
 }
 
@@ -113,8 +180,14 @@ export function UserList() {
     columns,
   } = useUserList();
 
+  const users = usersQuery.data?.data ?? [];
+  const totalUsers = users.length;
+  const activeUsers = users.filter((u) => u.isActive).length;
+  const adminUsers = users.filter((u) => u.role === "admin").length;
+
   return (
     <section className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Manajemen User</h1>
@@ -169,45 +242,100 @@ export function UserList() {
         </div>
       </div>
 
-      <DataTableSearch
-        value={search}
-        onChange={handleSearch}
-        placeholder="Cari user..."
-      />
+      {/* Summary Cards */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total User</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalUsers}</div>
+            <p className="text-xs text-muted-foreground">
+              pengguna terdaftar
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">User Aktif</CardTitle>
+            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-emerald-600">
+              {activeUsers}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              dari {totalUsers} pengguna
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Admin</CardTitle>
+            <ShieldCheck className="h-4 w-4 text-purple-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-600">
+              {adminUsers}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              pengguna dengan hak admin
+            </p>
+          </CardContent>
+        </Card>
+      </div>
 
-      <DataTable
-        columns={columns}
-        data={visibleUsers}
-        meta={usersQuery.data?.meta}
-        isLoading={usersQuery.isLoading}
-        isError={usersQuery.isError}
-        refetch={() => usersQuery.refetch()}
-        onPreviousPage={handlePreviousPage}
-        onNextPage={handleNextPage}
-      />
+      {/* Table Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Daftar User</CardTitle>
+          <CardDescription>
+            Semua pengguna yang terdaftar beserta role dan status mereka.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <DataTableSearch
+            value={search}
+            onChange={handleSearch}
+            placeholder="Cari user..."
+          />
 
-      <Sheet
+          <DataTable
+            columns={columns}
+            data={visibleUsers}
+            meta={usersQuery.data?.meta}
+            isLoading={usersQuery.isLoading}
+            isError={usersQuery.isError}
+            refetch={() => usersQuery.refetch()}
+            onPreviousPage={handlePreviousPage}
+            onNextPage={handleNextPage}
+          />
+        </CardContent>
+      </Card>
+
+      {/* Edit Dialog */}
+      <Dialog
         open={editItem !== null}
         onOpenChange={(open) => !open && setEditItem(null)}
       >
-        <SheetContent className="sm:max-w-125">
-          <SheetHeader>
-            <SheetTitle>Edit User</SheetTitle>
-            <SheetDescription>
+        <DialogContent className="sm:max-w-125">
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+            <DialogDescription>
               Ubah informasi user yang sudah ada.
-            </SheetDescription>
-          </SheetHeader>
+            </DialogDescription>
+          </DialogHeader>
           {editItem && (
-            <div className="mt-6">
-              <EditUserForm
-                user={editItem}
-                loading={updateUser.isPending}
-                onSubmit={handleUpdateUser}
-              />
-            </div>
+            <EditUserForm
+              key={editItem.id}
+              user={editItem}
+              loading={updateUser.isPending}
+              onSubmit={handleUpdateUser}
+            />
           )}
-        </SheetContent>
-      </Sheet>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

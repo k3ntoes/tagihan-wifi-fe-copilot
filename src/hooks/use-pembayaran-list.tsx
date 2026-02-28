@@ -3,16 +3,32 @@ import {
   Calendar,
   CheckCircle2,
   CreditCard,
+  Edit,
+  Trash2,
   User,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDate } from "@/lib/number_helper";
 import { useCustomers } from "@/services/customer-service";
 import {
   useCreatePayment,
+  useDeletePayment,
   useParsePaymentLog,
   usePayments,
+  useUpdatePayment,
 } from "@/services/payment-service";
 import type { Payment } from "@/types/api";
 
@@ -38,6 +54,7 @@ export function usePembayaranList() {
   const [filterMonth, setFilterMonth] = useState<string>("");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [parseDialogOpen, setParseDialogOpen] = useState(false);
+  const [editItem, setEditItem] = useState<Payment | null>(null);
 
   const paymentsQuery = usePayments({
     page,
@@ -48,6 +65,8 @@ export function usePembayaranList() {
   });
   const customersQuery = useCustomers({ page: 1, perPage: 100 });
   const createPayment = useCreatePayment();
+  const updatePayment = useUpdatePayment();
+  const deletePayment = useDeletePayment();
   const parseLog = useParsePaymentLog();
 
   const handleCreatePayment = async (payload: {
@@ -64,6 +83,38 @@ export function usePembayaranList() {
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Gagal mencatat pembayaran.",
+      );
+    }
+  };
+
+  const handleUpdatePayment = async (payload: {
+    customer_id: string;
+    payment_date: string;
+    billing_month: number;
+    billing_year: number;
+    amount: number;
+  }) => {
+    if (!editItem) return;
+    try {
+      await updatePayment.mutateAsync({ id: editItem.id, ...payload });
+      toast.success("Pembayaran berhasil diupdate.");
+      setEditItem(null);
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Gagal mengupdate pembayaran.",
+      );
+    }
+  };
+
+  const handleDeletePayment = async (id: string) => {
+    try {
+      await deletePayment.mutateAsync(id);
+      toast.success("Pembayaran dihapus.");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Gagal menghapus pembayaran.",
       );
     }
   };
@@ -158,6 +209,57 @@ export function usePembayaranList() {
         </div>
       ),
     },
+    {
+      id: "actions",
+      header: "Aksi",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-8 gap-1.5"
+            onClick={() => setEditItem(row.original)}
+          >
+            <Edit className="h-3.5 w-3.5" />
+            Edit
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-8 gap-1.5 border-rose-200 text-rose-700 hover:bg-rose-50 hover:text-rose-800"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Hapus
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Hapus Pembayaran?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Pembayaran dari &ldquo;{row.original.customer.name}&rdquo;
+                  periode {row.original.billingMonth}/
+                  {row.original.billingYear} akan dihapus secara permanen.
+                  Tindakan ini tidak dapat dibatalkan.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Batal</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-rose-600 hover:bg-rose-700"
+                  onClick={() => handleDeletePayment(row.original.id)}
+                >
+                  Hapus
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      ),
+    },
   ];
 
   return {
@@ -169,6 +271,8 @@ export function usePembayaranList() {
     setCreateDialogOpen,
     parseDialogOpen,
     setParseDialogOpen,
+    editItem,
+    setEditItem,
 
     // Queries
     paymentsQuery,
@@ -176,10 +280,13 @@ export function usePembayaranList() {
 
     // Mutations
     createPayment,
+    updatePayment,
     parseLog,
 
     // Handlers
     handleCreatePayment,
+    handleUpdatePayment,
+    handleDeletePayment,
     handleParseLog,
     handleCustomerFilterChange,
     handleYearFilterChange,

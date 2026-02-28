@@ -1,16 +1,18 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { KeyRound, Loader2, Lock, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import {
   type ChangePasswordFormValues,
   useChangePasswordForm,
@@ -35,7 +37,10 @@ export function ChangePasswordForm({
           name="old_password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password Lama</FormLabel>
+              <FormLabel className="flex items-center gap-2">
+                <Lock className="h-4 w-4 text-muted-foreground" />
+                Password Lama
+              </FormLabel>
               <FormControl>
                 <Input
                   type="password"
@@ -43,6 +48,9 @@ export function ChangePasswordForm({
                   {...field}
                 />
               </FormControl>
+              <FormDescription>
+                Password yang sedang digunakan saat ini.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -52,18 +60,25 @@ export function ChangePasswordForm({
           name="new_password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password Baru</FormLabel>
+              <FormLabel className="flex items-center gap-2">
+                <KeyRound className="h-4 w-4 text-amber-500" />
+                Password Baru
+              </FormLabel>
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Masukkan password baru"
+                  placeholder="Minimal 6 karakter"
                   {...field}
                 />
               </FormControl>
+              <FormDescription>
+                Gunakan kombinasi huruf dan angka yang kuat.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+        <Separator />
         <Button type="submit" disabled={loading} className="w-full gap-2">
           {loading ? (
             <>
@@ -71,7 +86,10 @@ export function ChangePasswordForm({
               Memproses...
             </>
           ) : (
-            "Ganti Password"
+            <>
+              <Save className="h-4 w-4" />
+              Ganti Password
+            </>
           )}
         </Button>
       </form>

@@ -1,9 +1,16 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Banknote, Plus, Users, Wifi } from "lucide-react";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableSearch } from "@/components/data-table/data-table-search";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -12,13 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { formatCurrency } from "@/lib/number_helper";
 import { usePelangganList } from "@/hooks/use-pelanggan-list";
 import { PelangganForm } from "./pelanggan-form";
 
@@ -41,8 +42,14 @@ export function PelangganList() {
     columns,
   } = usePelangganList();
 
+  const customers = customersQuery.data?.data ?? [];
+  const totalCustomers = customers.length;
+  const totalRevenue = customers.reduce((sum, c) => sum + c.monthlyFee, 0);
+  const avgFee = totalCustomers > 0 ? totalRevenue / totalCustomers : 0;
+
   return (
     <section className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Pelanggan</h1>
@@ -73,50 +80,105 @@ export function PelangganList() {
         </Dialog>
       </div>
 
-      <DataTableSearch
-        value={search}
-        onChange={handleSearch}
-        placeholder="Cari pelanggan..."
-      />
+      {/* Summary Cards */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Pelanggan</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalCustomers}</div>
+            <p className="text-xs text-muted-foreground">
+              pelanggan terdaftar
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Pendapatan</CardTitle>
+            <Banknote className="h-4 w-4 text-emerald-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-emerald-600">
+              {formatCurrency(totalRevenue)}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              per bulan
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Rata-rata Biaya</CardTitle>
+            <Wifi className="h-4 w-4 text-amber-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-600">
+              {formatCurrency(avgFee)}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              per pelanggan
+            </p>
+          </CardContent>
+        </Card>
+      </div>
 
-      <DataTable
-        columns={columns}
-        data={customersQuery.data?.data ?? []}
-        meta={customersQuery.data?.meta}
-        isLoading={customersQuery.isLoading}
-        isError={customersQuery.isError}
-        refetch={() => customersQuery.refetch()}
-        onPreviousPage={handlePreviousPage}
-        onNextPage={handleNextPage}
-      />
+      {/* Table Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Daftar Pelanggan</CardTitle>
+          <CardDescription>
+            Semua pelanggan yang terdaftar beserta paket layanan mereka.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <DataTableSearch
+            value={search}
+            onChange={handleSearch}
+            placeholder="Cari pelanggan..."
+          />
 
-      <Sheet
+          <DataTable
+            columns={columns}
+            data={customers}
+            meta={customersQuery.data?.meta}
+            isLoading={customersQuery.isLoading}
+            isError={customersQuery.isError}
+            refetch={() => customersQuery.refetch()}
+            onPreviousPage={handlePreviousPage}
+            onNextPage={handleNextPage}
+          />
+        </CardContent>
+      </Card>
+
+      {/* Edit Dialog */}
+      <Dialog
         open={editItem !== null}
         onOpenChange={(open) => !open && setEditItem(null)}
       >
-        <SheetContent className="sm:max-w-125">
-          <SheetHeader>
-            <SheetTitle>Edit Pelanggan</SheetTitle>
-            <SheetDescription>
+        <DialogContent className="sm:max-w-125">
+          <DialogHeader>
+            <DialogTitle>Edit Pelanggan</DialogTitle>
+            <DialogDescription>
               Ubah informasi pelanggan yang sudah ada.
-            </SheetDescription>
-          </SheetHeader>
+            </DialogDescription>
+          </DialogHeader>
           {editItem && (
-            <div className="mt-6">
-              <PelangganForm
-                packages={packagesQuery.data?.data ?? []}
-                initialValues={{
-                  name: editItem.name,
-                  package_id: editItem.package.id,
-                  monthly_fee: editItem.monthlyFee,
-                }}
-                loading={updateCustomer.isPending}
-                onSubmit={handleUpdate}
-              />
-            </div>
+            <PelangganForm
+              key={editItem.id}
+              packages={packagesQuery.data?.data ?? []}
+              initialValues={{
+                name: editItem.name,
+                package_id: editItem.package.id,
+                monthly_fee: editItem.monthlyFee,
+              }}
+              loading={updateCustomer.isPending}
+              onSubmit={handleUpdate}
+            />
           )}
-        </SheetContent>
-      </Sheet>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

@@ -1,10 +1,11 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { KeyRound, Loader2, Plus, ShieldCheck, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { type UserFormValues, useUserForm } from "@/hooks/use-user-form";
 
 interface UserFormProps {
@@ -36,10 +38,14 @@ export function UserForm({ onSubmit, loading }: UserFormProps) {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel className="flex items-center gap-2">
+                <User className="h-4 w-4 text-primary" />
+                Username
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Contoh: johndoe" {...field} />
               </FormControl>
+              <FormDescription>Minimal 3 karakter, harus unik.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -49,7 +55,10 @@ export function UserForm({ onSubmit, loading }: UserFormProps) {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel className="flex items-center gap-2">
+                <KeyRound className="h-4 w-4 text-amber-500" />
+                Password
+              </FormLabel>
               <FormControl>
                 <Input
                   type="password"
@@ -57,6 +66,9 @@ export function UserForm({ onSubmit, loading }: UserFormProps) {
                   {...field}
                 />
               </FormControl>
+              <FormDescription>
+                Gunakan kombinasi huruf dan angka.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -66,7 +78,10 @@ export function UserForm({ onSubmit, loading }: UserFormProps) {
           name="role"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Role</FormLabel>
+              <FormLabel className="flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-purple-500" />
+                Role
+              </FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -78,10 +93,14 @@ export function UserForm({ onSubmit, loading }: UserFormProps) {
                   <SelectItem value="admin">Admin</SelectItem>
                 </SelectContent>
               </Select>
+              <FormDescription>
+                Admin memiliki akses penuh ke sistem.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+        <Separator />
         <Button type="submit" disabled={loading} className="w-full gap-2">
           {loading ? (
             <>
@@ -89,7 +108,10 @@ export function UserForm({ onSubmit, loading }: UserFormProps) {
               Menyimpan...
             </>
           ) : (
-            "Tambah User"
+            <>
+              <Plus className="h-4 w-4" />
+              Tambah User
+            </>
           )}
         </Button>
       </form>
