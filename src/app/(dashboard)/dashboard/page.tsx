@@ -10,13 +10,11 @@ import {
   Users,
   XCircle,
 } from "lucide-react";
-import Link from "next/link";
 import { useMemo } from "react";
-import { Button } from "@/components/ui/button";
+import { DashboardBillingMatrix } from "@/components/dashboard/dashboard-billing-matrix";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -259,131 +257,8 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Unpaid This Month Table */}
-      {!billingQuery.isError && (
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>Belum Bayar Bulan {monthName}</CardTitle>
-              <CardDescription>
-                Pelanggan yang belum melakukan pembayaran untuk bulan ini.
-              </CardDescription>
-            </div>
-            <Button variant="outline" size="sm" asChild>
-              <Link href="/tagihan">Lihat Semua</Link>
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto rounded-lg border">
-              <table className="w-full border-collapse text-sm">
-                <thead>
-                  <tr className="border-b bg-muted/50">
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Pelanggan
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Paket
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                      Biaya/Bulan
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                      Progres Tahun Ini
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {billingQuery.isLoading ? (
-                    Array.from({ length: 5 }).map((_, i) => (
-                      <tr
-                        key={`skel-${i}`}
-                        className="border-b last:border-b-0"
-                      >
-                        <td className="px-4 py-3">
-                          <Skeleton className="h-4 w-32" />
-                        </td>
-                        <td className="px-4 py-3">
-                          <Skeleton className="h-4 w-20" />
-                        </td>
-                        <td className="px-4 py-3">
-                          <Skeleton className="ml-auto h-4 w-24" />
-                        </td>
-                        <td className="px-4 py-3">
-                          <Skeleton className="ml-auto h-4 w-16" />
-                        </td>
-                      </tr>
-                    ))
-                  ) : stats?.unpaidThisMonth.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={4}
-                        className="px-4 py-8 text-center text-muted-foreground"
-                      >
-                        <div className="flex flex-col items-center gap-2">
-                          <CheckCircle2 className="h-8 w-8 text-emerald-500" />
-                          <p className="font-medium">
-                            Semua pelanggan sudah bayar bulan ini!
-                          </p>
-                        </div>
-                      </td>
-                    </tr>
-                  ) : (
-                    stats?.unpaidThisMonth.slice(0, 10).map((row) => (
-                      <tr
-                        key={row.customer.id}
-                        className="border-b last:border-b-0 hover:bg-muted/30 transition-colors"
-                      >
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
-                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10">
-                              <Users className="h-3.5 w-3.5 text-primary" />
-                            </div>
-                            <span className="font-medium">
-                              {row.customer.name}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-600/20">
-                            <Package className="h-3 w-3" />
-                            {row.customer.package.name}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                          <span className="font-semibold text-emerald-600">
-                            {formatCurrency(row.customer.monthlyFee)}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <div className="h-2 w-20 rounded-full bg-muted">
-                              <div
-                                className={`h-2 rounded-full ${
-                                  row.completionPercentage >= 75
-                                    ? "bg-emerald-500"
-                                    : row.completionPercentage >= 50
-                                      ? "bg-amber-500"
-                                      : "bg-rose-500"
-                                }`}
-                                style={{
-                                  width: `${Math.min(row.completionPercentage, 100)}%`,
-                                }}
-                              />
-                            </div>
-                            <span className="text-xs font-medium text-muted-foreground w-10 text-right">
-                              {row.completionPercentage.toFixed(0)}%
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* Billing Matrix */}
+      {!billingQuery.isError && <DashboardBillingMatrix />}
     </section>
   );
 }
