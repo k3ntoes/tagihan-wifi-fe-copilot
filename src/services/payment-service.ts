@@ -39,7 +39,10 @@ export function useCreatePayment() {
       billing_year: number;
       amount: number;
     }) => apiPost<SingleResponse<Payment>>("/payments", payload),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [paymentKey] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [paymentKey] });
+      queryClient.invalidateQueries({ queryKey: ["billing-matrix"] });
+    },
   });
 }
 
@@ -62,7 +65,10 @@ export function useUpdatePayment() {
         billing_year: payload.billing_year,
         amount: payload.amount,
       }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [paymentKey] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [paymentKey] });
+      queryClient.invalidateQueries({ queryKey: ["billing-matrix"] });
+    },
   });
 }
 
