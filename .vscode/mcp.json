@@ -1,10 +1,34 @@
 {
-  "servers": {
-    "next-devtools": {
-      "command": "npx",
-      "args": ["-y", "next-devtools-mcp@latest"],
-      "type": "stdio"
-    }
-  },
-  "inputs": []
+	"servers": {
+		"next-devtools": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"next-devtools-mcp@latest"
+			],
+			"type": "stdio"
+		},
+		"playwright": {
+			"command": "npx",
+			"args": [
+				"@playwright/mcp@0.0.68"
+			],
+			"cwd": "${input:cwd}",
+			"sandboxEnabled": false,
+			"dev": {
+				"watch": "src/**/*.ts",
+				"debug": {
+					"type": "node"
+				}
+			},
+			"type": "stdio"
+		}
+	},
+	"inputs": [
+		{
+			"id": "cwd",
+			"type": "promptString",
+			"description": "Working Directory"
+		}
+	]
 }
