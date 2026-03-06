@@ -43,11 +43,14 @@ export function usePagination() {
   return useMemo(
     () => ({
       page: Number.isFinite(page) && page > 0 ? page : DEFAULT_PAGE,
-      perPage: Number.isFinite(perPage) && perPage > 0 ? perPage : DEFAULT_PER_PAGE,
+      perPage:
+        Number.isFinite(perPage) && perPage > 0 ? perPage : DEFAULT_PER_PAGE,
       search,
       setPage: (nextPage: number) => setQuery({ page: nextPage }),
-      setPerPage: (nextPerPage: number) => setQuery({ perPage: nextPerPage, page: 1 }),
-      setSearch: (nextSearch: string) => setQuery({ search: nextSearch, page: 1 }),
+      setPerPage: (nextPerPage: number) =>
+        setQuery({ perPage: nextPerPage, page: 1 }),
+      setSearch: (nextSearch: string) =>
+        setQuery({ search: nextSearch, page: 1 }),
     }),
     [page, perPage, search, setQuery],
   );

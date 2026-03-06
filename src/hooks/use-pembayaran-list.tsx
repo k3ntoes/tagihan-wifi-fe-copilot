@@ -101,9 +101,7 @@ export function usePembayaranList() {
       setEditItem(null);
     } catch (error) {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Gagal mengupdate pembayaran.",
+        error instanceof Error ? error.message : "Gagal mengupdate pembayaran.",
       );
     }
   };
@@ -241,9 +239,9 @@ export function usePembayaranList() {
                 <AlertDialogTitle>Hapus Pembayaran?</AlertDialogTitle>
                 <AlertDialogDescription>
                   Pembayaran dari &ldquo;{row.original.customer.name}&rdquo;
-                  periode {row.original.billingMonth}/
-                  {row.original.billingYear} akan dihapus secara permanen.
-                  Tindakan ini tidak dapat dibatalkan.
+                  periode {row.original.billingMonth}/{row.original.billingYear}{" "}
+                  akan dihapus secara permanen. Tindakan ini tidak dapat
+                  dibatalkan.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

@@ -18,8 +18,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { formatCurrency } from "@/lib/number_helper";
 import { usePembayaranList } from "@/hooks/use-pembayaran-list";
+import { formatCurrency } from "@/lib/number_helper";
 import { ParseLogForm } from "./parse-log-form";
 import { PembayaranForm } from "./pembayaran-form";
 
@@ -118,19 +118,21 @@ export function PembayaranList() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Pembayaran</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Pembayaran
+            </CardTitle>
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalPayments}</div>
-            <p className="text-xs text-muted-foreground">
-              transaksi tercatat
-            </p>
+            <p className="text-xs text-muted-foreground">transaksi tercatat</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Penerimaan</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Penerimaan
+            </CardTitle>
             <Banknote className="h-4 w-4 text-emerald-500" />
           </CardHeader>
           <CardContent>
@@ -144,16 +146,16 @@ export function PembayaranList() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pelanggan Bayar</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Pelanggan Bayar
+            </CardTitle>
             <Users className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">
               {uniqueCustomers}
             </div>
-            <p className="text-xs text-muted-foreground">
-              pelanggan unik
-            </p>
+            <p className="text-xs text-muted-foreground">pelanggan unik</p>
           </CardContent>
         </Card>
       </div>

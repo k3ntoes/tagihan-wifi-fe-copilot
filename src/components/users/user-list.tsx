@@ -3,15 +3,12 @@
 import {
   CheckCircle2,
   Key,
-  KeyRound,
   Loader2,
   Plus,
   Save,
-  Shield,
   ShieldCheck,
   User,
   Users,
-  XCircle,
 } from "lucide-react";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableSearch } from "@/components/data-table/data-table-search";
@@ -72,10 +69,7 @@ function EditUserForm({
 
   return (
     <Form {...form}>
-      <form
-        className="space-y-4"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="username"
@@ -113,7 +107,9 @@ function EditUserForm({
                   <SelectItem value="admin">Admin</SelectItem>
                 </SelectContent>
               </Select>
-              <FormDescription>Hak akses pengguna dalam sistem.</FormDescription>
+              <FormDescription>
+                Hak akses pengguna dalam sistem.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -251,9 +247,7 @@ export function UserList() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalUsers}</div>
-            <p className="text-xs text-muted-foreground">
-              pengguna terdaftar
-            </p>
+            <p className="text-xs text-muted-foreground">pengguna terdaftar</p>
           </CardContent>
         </Card>
         <Card>

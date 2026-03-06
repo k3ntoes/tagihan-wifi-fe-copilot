@@ -227,8 +227,8 @@ export function useUserList() {
 
   const visibleUsers = search
     ? (usersQuery.data?.data ?? []).filter((u) =>
-      u.username.toLowerCase().includes(search.toLowerCase()),
-    )
+        u.username.toLowerCase().includes(search.toLowerCase()),
+      )
     : (usersQuery.data?.data ?? []);
 
   return {

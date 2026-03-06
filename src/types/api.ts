@@ -32,7 +32,12 @@ export interface User {
 }
 
 import type { Package } from "./package";
-export type { Package, CreatePackagePayload, UpdatePackagePayload } from "./package";
+
+export type {
+  CreatePackagePayload,
+  Package,
+  UpdatePackagePayload,
+} from "./package";
 
 export interface Customer {
   id: string;

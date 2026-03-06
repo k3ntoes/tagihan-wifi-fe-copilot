@@ -48,11 +48,11 @@ export default function DashboardPage() {
       totalExpected > 0 ? (totalCollected / totalExpected) * 100 : 0;
     const unpaidThisMonth = rows.filter((row) => {
       const payment = row.payments.find((p) => p.month === currentMonth);
-      return payment && !payment?.paid;
+      return payment && !payment.paid;
     });
     const paidThisMonth = rows.filter((row) => {
       const payment = row.payments.find((p) => p.month === currentMonth);
-      return payment && payment?.paid;
+      return payment?.paid;
     });
     return {
       totalCollected,
@@ -358,12 +358,13 @@ export default function DashboardPage() {
                           <div className="flex items-center justify-end gap-2">
                             <div className="h-2 w-20 rounded-full bg-muted">
                               <div
-                                className={`h-2 rounded-full ${row.completionPercentage >= 75
-                                  ? "bg-emerald-500"
-                                  : row.completionPercentage >= 50
-                                    ? "bg-amber-500"
-                                    : "bg-rose-500"
-                                  }`}
+                                className={`h-2 rounded-full ${
+                                  row.completionPercentage >= 75
+                                    ? "bg-emerald-500"
+                                    : row.completionPercentage >= 50
+                                      ? "bg-amber-500"
+                                      : "bg-rose-500"
+                                }`}
                                 style={{
                                   width: `${Math.min(row.completionPercentage, 100)}%`,
                                 }}

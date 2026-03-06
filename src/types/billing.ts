@@ -29,22 +29,9 @@ export interface BillingMatrixMeta {
   hasNext: boolean;
 }
 
-export interface BillingMatrixResponse {
-  data: BillingMatrixRow[];
-  meta: BillingMatrixMeta;
-  monthNames: string[];
-}
-
 export interface BillingMatrixSummary {
   totalCustomers: number;
   totalCollected: number;
   totalExpected: number;
   collectionRate: number;
-}
-
-export interface BillingMatrixFilters {
-  year: number;
-  search: string;
-  page: number;
-  perPage: number;
 }

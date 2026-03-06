@@ -97,7 +97,9 @@ export function PelangganForm({
                     ))}
                   </SelectContent>
                 </Select>
-                <FormDescription>Biaya otomatis mengikuti harga paket.</FormDescription>
+                <FormDescription>
+                  Biaya otomatis mengikuti harga paket.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

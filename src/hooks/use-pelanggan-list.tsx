@@ -1,10 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import {
-  Edit,
-  Package as PackageIcon,
-  Trash2,
-  User,
-} from "lucide-react";
+import { Edit, Package as PackageIcon, Trash2, User } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import {

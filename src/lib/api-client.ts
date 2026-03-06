@@ -11,7 +11,9 @@ class HttpError extends Error {
   }
 }
 
-function toSearchParams(params?: Record<string, string | number | boolean | undefined>) {
+function toSearchParams(
+  params?: Record<string, string | number | boolean | undefined>,
+) {
   if (!params) {
     return "";
   }

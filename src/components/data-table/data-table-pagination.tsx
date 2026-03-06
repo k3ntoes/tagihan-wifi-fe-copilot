@@ -38,8 +38,8 @@ export function DataTablePagination({
         <span className="font-medium text-foreground">
           {startItem}–{endItem}
         </span>{" "}
-        dari{" "}
-        <span className="font-medium text-foreground">{meta.total}</span> data
+        dari <span className="font-medium text-foreground">{meta.total}</span>{" "}
+        data
       </p>
 
       <div className="flex items-center gap-1">

@@ -116,7 +116,9 @@ export function BillingMatrix() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Terbayar</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Terbayar
+            </CardTitle>
             <Banknote className="h-4 w-4 text-emerald-500" />
           </CardHeader>
           <CardContent>
@@ -130,7 +132,9 @@ export function BillingMatrix() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Belum Terbayar</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Belum Terbayar
+            </CardTitle>
             <CreditCard className="h-4 w-4 text-rose-500" />
           </CardHeader>
           <CardContent>
@@ -144,16 +148,16 @@ export function BillingMatrix() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rata-rata Lunas</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Rata-rata Lunas
+            </CardTitle>
             <PercentCircle className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">
               {avgCompletion.toFixed(0)}%
             </div>
-            <p className="text-xs text-muted-foreground">
-              tingkat pelunasan
-            </p>
+            <p className="text-xs text-muted-foreground">tingkat pelunasan</p>
           </CardContent>
         </Card>
       </div>
@@ -222,10 +226,7 @@ export function BillingMatrix() {
               <tbody>
                 {query.isLoading ? (
                   Array.from({ length: 5 }).map((_, i) => (
-                    <tr
-                      key={`skel-${i}`}
-                      className="border-b last:border-b-0"
-                    >
+                    <tr key={`skel-${i}`} className="border-b last:border-b-0">
                       <td className="px-3 py-3">
                         <Skeleton className="h-4 w-32" />
                       </td>
@@ -314,7 +315,9 @@ export function BillingMatrix() {
                         </span>
                       </td>
                       <td className="px-3 py-3 text-right">
-                        <CompletionBadge percentage={row.completionPercentage} />
+                        <CompletionBadge
+                          percentage={row.completionPercentage}
+                        />
                       </td>
                     </tr>
                   ))

@@ -15,25 +15,18 @@ export function usePublicBillingMatrix() {
     customerName: search,
   });
 
-  const { data: statsData } = useBillingMatrix({
-    year,
-    page: 1,
-    perPage: 1000,
-    customerName: search,
-  });
-
   const summary = useMemo<BillingMatrixSummary>(() => {
-    const rows = statsData?.data ?? [];
+    const rows = data?.data ?? [];
     const totalCollected = rows.reduce((sum, row) => sum + row.totalPaid, 0);
     const totalExpected = rows.reduce((sum, row) => sum + row.totalExpected, 0);
     return {
-      totalCustomers: statsData?.meta.total ?? 0,
+      totalCustomers: data?.meta.total ?? 0,
       totalCollected,
       totalExpected,
       collectionRate:
         totalExpected > 0 ? (totalCollected / totalExpected) * 100 : 0,
     };
-  }, [statsData]);
+  }, [data]);
 
   const handleYearChange = (delta: number) => {
     setYear((v) => v + delta);
