@@ -311,7 +311,7 @@ export function DashboardBillingMatrix() {
 
           {/* Matrix Table */}
           <div className="overflow-x-auto rounded-lg border">
-            <table className="w-full min-w-[800px] border-collapse text-sm">
+            <table className="w-full min-w-200 border-collapse text-sm">
               <thead>
                 <tr className="border-b bg-muted/50">
                   <th className="px-3 py-3 text-left font-medium text-muted-foreground">
